@@ -25,6 +25,7 @@ rawPath = rawDir + rawName
 
 
 
+
 #ilastik_singlecell_quant.scq(rawPath, trackPath)
 
 #the goal: get per cell averages per frame, assigned to 
