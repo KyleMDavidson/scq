@@ -1,6 +1,5 @@
 from java.util import ArrayList
 from array import array, zeros
-#from itertools import groupby
 import os
 import sys
 from ij import IJ
@@ -11,15 +10,9 @@ def sort_intensities_on_lineage(enumeratedTrackPixels, rawPixels):
 	maskAndRaw = zip([set[0] for set in enumeratedTrackPixels], [set[1] for set in enumeratedTrackPixels], rawPixels)
 	sortedMaskAndRaw = sorted(maskAndRaw, key=lambda x:x[1])  # proven MVP sort lambda. return sorted on cellID.
 	backgroundPixels = 0
-	print 'first entry: ' + str(sortedMaskAndRaw[0])
-	print 'last entry: ' + str(sortedMaskAndRaw[len(sortedMaskAndRaw)-1]) #both as expected
 	for entry in sortedMaskAndRaw:
 		if entry[1] == 0:
 			backgroundPixels = backgroundPixels+1
-
-	#print ' total pixels processed: ' + str(len(sortedMaskAndRaw))
-	#print ' background pixels removed : ' + str(backgroundPixels)
-	#print ' pixels being passed on: ' + str(len(sortedMaskAndRaw[backgroundPixels:])) 
 	'''this should return
  first entry: (2, 0.0, 179.0)
  last entry: (9434783, 1309.0, 625.0)
@@ -34,14 +27,7 @@ def sort_intensities_on_lineage(enumeratedTrackPixels, rawPixels):
 	#this excludes all pixels with value = 0 (background)
 	#memory use is far less than average lineage intensity (easily handles entire images). No need to block this.
 def average_lineage_intensity(preIntensityByCell):
-	#0319 itertools rewrite (no strings) still a lockout - this maxes out memory use. (93-97%) 
-	#0319 standard arrays rewrite but with subsetting: this entirely processes 100 cells at a time - this hits about 50% memory within five minutes
-	#and continues to rise after that.
-	#this was logical.
-	#blockedPreIntensityByCell = []
-	#blockIndex = 0 #also in cells
-	#blockSize = 100 #this needs to be in cells (and here, it is!) 
-	#lineages start @ 1 (background removed)
+
 	#access lineage @ [1] in PIBC
 	#preIntensityByCell = preIntensityByCell[1:100] #testing subset
 	currentCell = []
@@ -54,7 +40,6 @@ def average_lineage_intensity(preIntensityByCell):
 	intensitySum=0
 	i=0
 	for cell in preIntensityByCell:
-		print currentCell,' ', cell[1]
 		if  cell[1] == currentCellID:   # first cell will always match (if there is a cell)
 			#print 'lineage, intensity: ' + str(cell[1]) +', '+str(cell[2])
 			currentCell.append(cell[2]) # append intensity
@@ -71,10 +56,33 @@ def average_lineage_intensity(preIntensityByCell):
 	averageIntensity = sum(currentCell) / len(currentCell) # the last cell will never match
 	averageIntensityByCell.append(averageIntensity) 
 	cellIDs.append(currentCellID)
-	averageIntensityByCell.append(averageIntensity)
+	averageIntensityByCell = zip(cellIDs, averageIntensityByCell)
 	
 	return averageIntensityByCell
 	
+#preIntensityByCell [ index, cellID, rawPixelValue] sorted on cellID from sort_intensities_on_lineage, excludes non-cell pixels.
+#iterate through PIBC for each cellID, adding cell intensities and then averaging upon new cell
+# 0402 major rewrite - rectangular, final array as an argument, index by cellID
+#PIBC going in with 1309 cells expected across the test stack 0402
+def average_lineage_intensity2(preIntensityByCell, intensityByCell):
+	currentCellPixelCount = 0
+	currentCellID = preIntensityByCell[0][1]
+	intensitySum=0
+	currentCell = []
+	for cell in preIntensityByCell:
+		#if cell[1]>1300:
+		if  cell[1] == currentCellID:   # first cell will always match (if there is a cell)
+			currentCell.append(cell[2]) 
+		else:
+			averageIntensity = sum(currentCell) / len(currentCell)
+			intensityByCell[int(cell[1])] = averageIntensity #index by cellID #0402 coming back out of range
+			currentCell = []  # empty currentCell after calculations
+			currentCell.append (cell[2])	# add the first new cell intensity
+			
+	averageIntensity = sum(currentCell) / len(currentCell) # the last cell will never match
+	intensityByCell[int(cell[1])] = averageIntensity
+	return intensityByCell
+
 #   append blocks to below and compute
 #	lineages = max([set[1] for set in preIntensityByCell])
 #	cellAverageIntensities = []
@@ -111,7 +119,7 @@ def average_lineage_intensity(preIntensityByCell):
 	#	print 'index:' + str(i)
 	#	for pixelTuple in preIntensityByCell:
 	#		print pixelTuple
-	#		currentSum = currentSum + pixelTuple[2]
+	#		currentSum = currentSum +csv1 = read.csv('C:\\Users\\davidsonk2\\OneDrive - UPMC\\Documents\\Ilastik\\scq\\wellA02_t1,2_IBCBT)pixelTuple[2]
 	#		pixelsInLineage = pixelsInLineage+1
 	#		cellAverageIntensities.append(currentSum / pixelsInLineage)
 	#	print 'lineage average intensity: ' + str(cellAverageIntensities[i])

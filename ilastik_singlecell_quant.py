@@ -43,7 +43,8 @@ print os.path
 #rawPath = rawDir + rawName
 #in pixels. This allows get intensity to do it's thing without maxing out memory. 
 #in a 32 bit 3072x3072 bit tiff, the 926 masks have a maximum width under 100 
-def scq(rawPath, trackPath):
+#intensityByCell is solely for lineage averages and identity is by index.
+def scq(rawPath, trackPath, intensityByCell):
 	maximumCellSize = 100
 	maximumCellOccupancy1D = 100*3072
 	# Grab the image processor with data converted to float values (an easy type), then get pixels from it.
@@ -58,10 +59,12 @@ def scq(rawPath, trackPath):
 	#trackPixels = trackPixels[1:200] # testing subset 0322
 	enumeratedTrackPixels = get_ilastik_unique_cells_locations.get_ilastik_unique_cells_locations(trackPixels)
 	preIntensityByCell = get_intensity_per_cell.sort_intensities_on_lineage(enumeratedTrackPixels, rawPixels)
-	intensityByCell = get_intensity_per_cell.average_lineage_intensity(preIntensityByCell)
-	if intensityByCell is None:
-		print 'null PIBC' 
+	intensityByCell = get_intensity_per_cell.average_lineage_intensity2(preIntensityByCell, intensityByCell) #0402 major rewrite - static rectangular stack processing
+
 	
+	if intensityByCell is None:
+		print 'null IBC' 
+	return intensityByCell	
 
 '''
 if os.path.exists(objectivePath):
@@ -72,6 +75,9 @@ else:
 objectivePath = os.path.dirname(os.path.abspath(imagePath)) 
 this returns the path C:\Java\Fiji.app
 '''
+
+
+
 
 #fs = FileSaver(image)
 #if os.path.exists(output_folder):
