@@ -64,23 +64,26 @@ def average_lineage_intensity(preIntensityByCell):
 #iterate through PIBC for each cellID, adding cell intensities and then averaging upon new cell
 # 0402 major rewrite - rectangular, final array as an argument, index by cellID
 #PIBC going in with 1309 cells expected across the test stack 0402
+# returns a list indexed on cellID of average intensity 
 def average_lineage_intensity2(preIntensityByCell, intensityByCell):
-	currentCellPixelCount = 0
-	currentCellID = preIntensityByCell[0][1]
 	intensitySum=0
+	currentCellPixelCount = 0
 	currentCell = []
+	currentCellID = preIntensityByCell[0][1]
 	for cell in preIntensityByCell:
-		#if cell[1]>1300:
 		if  cell[1] == currentCellID:   # first cell will always match (if there is a cell)
 			currentCell.append(cell[2]) 
 		else:
 			averageIntensity = sum(currentCell) / len(currentCell)
-			intensityByCell[int(cell[1])] = averageIntensity #index by cellID #0402 coming back out of range
+			intensityByCell[int(currentCellID)] = averageIntensity #index by cellID #0404 coming back out of range
 			currentCell = []  # empty currentCell after calculations
-			currentCell.append (cell[2])	# add the first new cell intensity
-			
+			currentCellID = int(cell[1]) #set the new ID 
+			currentCell.append (cell[2])	# add the first new cell intensity	
+			print 'cell: ' + str(cell)
+			print 'average intensity: ' + str(averageIntensity)
 	averageIntensity = sum(currentCell) / len(currentCell) # the last cell will never match
 	intensityByCell[int(cell[1])] = averageIntensity
+	
 	return intensityByCell
 
 #   append blocks to below and compute
