@@ -16,6 +16,10 @@ from array import zeros
 from ij import IJ
 from datetime import datetime
 
+#set these to the paths to your track and raw image dirs. Expects TIFFs for both.
+trackDir = r'C:\Users\me\...'
+rawDir = r'C:\Users\me\...'
+
 def scq_stack(raw_names, track_names, maximum_cell_size):
 	rawPaths = []
 	trackPaths = []
@@ -43,6 +47,7 @@ def scq_stack(raw_names, track_names, maximum_cell_size):
 		intensityByCell = ilastik_singlecell_quant.scq(imagePair[1], imagePair[0], [0]*maxLineages, maximum_cell_size)
 		IBCBT.append(intensityByCell) 
 	return IBCBT # list (t dimension) of lists (cell dimension) of average cell intensity
+
 
 raw_names = os.listdir(rawDir)
 track_names = os.listdir(trackDir)
