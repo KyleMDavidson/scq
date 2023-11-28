@@ -1,6 +1,6 @@
 This is intended to take a directory of masks and a directory of raw images, both as TIFFs, within which the color value of bits in a mask image is a unique ID to be used for quantitation or analysis of values at the coorresponding positions in the raw tiffs. The masks will likely be the output of an Ilastik or CellProfiler cell tracking workflow.
 
-It is written to be compatible with the Jython compiler and core Jython libraries shipped with ImageJ 1.53, both of which were specified by working conditions at the time of writing and have their benefits and drawbacks now. This served out purposes at the time. 
+It is written to be compatible with the Jython compiler and core Jython libraries shipped with ImageJ 1.53, both of which were specified by working conditions at the time of writing and have their benefits and drawbacks now. This served our purposes at the time. 
 
 Since this was written, many alternatives have arisen  - many much like us by researchers asking similar questions (such as the one pointed out in https://forum.image.sc/t/measure-tracked-spot-intensities-in-mamut-or-ilastik/27893) whose primary difference is focus and abstraction depth, and some (such as https://forum.image.sc/t/measuring-fluorescence-intensity-of-individual-cells/69802) which are not only similar and written by those like us but also with greater influence and contributorships. 
 
