@@ -1,4 +1,4 @@
-This is intended to take a directory of masks and a directory of raw images, both as TIFFs, within which the color value of bits in a mask image is a unique ID to be used for quantitation or analysis of values at the coorresponding positions in the raw tiffs. The masks will likely be the output of an Ilastik cell tracking workflow.
+This is intended to take a directory of masks and a directory of raw images, both as TIFFs, within which the color value of bits in a mask image is a unique ID to be used for quantitation or analysis of values at the coorresponding positions in the raw tiffs. The masks will likely be the output of an Ilastik or CellProfiler cell tracking workflow.
 
 It is written to be compatible with the Jython compiler and core Jython libraries shipped with ImageJ 1.53, both of which were specified by working conditions at the time of writing and have their benefits and drawbacks now. This served out purposes at the time. 
 
