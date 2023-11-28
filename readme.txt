@@ -6,7 +6,8 @@ Since this was written, many alternatives have arisen  - many much like us by re
 
 We recommend using Ilastik as described in the first link above if you are now asking "what is the intensity of each cell at each time point", you are willing & able, you have a bit of time, and you are free to install software. If you are stuck in an environment limited to ImageJ, you don't have time, and want to simply point the scq script at your data (see the path to hardcode at the top level of scq) and get an output, then this is the right software for you. Be aware that you must also write into the script the maximum size of your cells.
 
-scq_process_stack is the highest level function - processes inputs of tiff(s) in two sets (raw and mask)
+scq_process_stack is the highest level function - processes inputs of TIFF(s) in two sets (raw and mask) - you hardcode the paths to the directories containing your raw and tracked mask images at the top of the scq_process_stack file. This is the only thing that you have to do before executing the script and getting your results.
+
 ilastik_singlecell_quant aggregates a list of per-cell averages per image
 get_intensity_per_cell aggregates a list of per-cell-intensity and takes their average
 distinguish_children is a shell for the time being to potentially contain code that will be used to reassign individual cells to their own lineages after a division event. 
