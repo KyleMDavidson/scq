@@ -4,3 +4,4 @@ scq_process_stack is the highest level function - processes inputs of tiff(s) in
 ilastik_singlecell_quant aggregates a list of per-cell averages per image
 get_intensity_per_cell aggregates a list of per-cell-intensity and takes their average
 distinguish_children is a shell for the time being to potentially contain code that will be used to reassign individual cells to their own lineages after a division event. 
+current assumption is that you don't have a significant number of dividing cells in the time course imaged.
