@@ -16,7 +16,7 @@ from array import zeros
 from ij import IJ
 from datetime import datetime
 
-def scq_stack(raw_names, track_names):
+def scq_stack(raw_names, track_names, maximum_cell_size):
 	rawPaths = []
 	trackPaths = []
 	for track in track_names:
@@ -37,17 +37,19 @@ def scq_stack(raw_names, track_names):
 	print 'maxLineages: ' + str(maxLineages) # passing 0402
 	tracks = len(trackPaths)
 
+	
 	IBCBT = []
 	for imagePair in zip(trackPaths,rawPaths):
-		intensityByCell = ilastik_singlecell_quant.scq(imagePair[1], imagePair[0], [0]*maxLineages) #raw, track, IBC
+		intensityByCell = ilastik_singlecell_quant.scq(imagePair[1], imagePair[0], [0]*maxLineages, maximum_cell_size)
 		IBCBT.append(intensityByCell) 
 	return IBCBT # list (t dimension) of lists (cell dimension) of average cell intensity
 
 raw_names = os.listdir(rawDir)
 track_names = os.listdir(trackDir)
+maximum_cell_size = 200 #set this to the max pixels your largest cell takes up on your screen
 
 # list (t dimension) of lists (cell dimension) of average cell intensity #R naturally takes None as NA. No coercion needed. 
-intensityByCellByTime = scq_stack(raw_names, track_names) 
+intensityByCellByTime = scq_stack(raw_names, track_names, maximum_cell_size) 
 
 #writes to a static filename here.
 with open (outputPath) as csvfile:
